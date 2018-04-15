@@ -52,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
         if (teamAWicketsCount < 10) {
             ++teamAWicketsCount;
             final TextView tvTeamAWicketsCount = (TextView) findViewById(R.id.team_a_wickets_text_view);
-            tvTeamAWicketsCount.postDelayed(new Runnable() {
+            homeActivityHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     tvTeamAWicketsCount.setText("/" + teamAWicketsCount);
@@ -60,6 +60,33 @@ public class HomeActivity extends AppCompatActivity {
             }, 250);
         }else {
             Toast.makeText(this, "Team A's inning is over", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void addSixForTeamB(View view) {
+        addScoresinBackground(TEAM_B, SIX);
+    }
+
+    public void addFourForTeamB(View view) {
+        addScoresinBackground(TEAM_B, FOUR);
+    }
+
+    public void addOneForTeamB(View view) {
+        addScoresinBackground(TEAM_B, SINGLE_RUN);
+    }
+
+    public void dropWicketForTeamB(View view) {
+        if (teamBWicketsCount < 10) {
+            ++teamBWicketsCount;
+            final TextView tvTeamBWicketsCount = (TextView) findViewById(R.id.team_b_wickets_text_view);
+            homeActivityHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    tvTeamBWicketsCount.setText("/" + teamBWicketsCount);
+                }
+            }, 250);
+        }else {
+            Toast.makeText(this, "Team B's inning is over", Toast.LENGTH_SHORT).show();
         }
     }
 
