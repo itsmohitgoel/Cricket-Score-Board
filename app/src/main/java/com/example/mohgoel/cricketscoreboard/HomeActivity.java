@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 public class HomeActivity extends AppCompatActivity {
     private int teamAScore = 0;
     private int teamAWicketsCount = 0;
@@ -15,7 +17,14 @@ public class HomeActivity extends AppCompatActivity {
     private int teamBWicketsCount = 0;
     private int teamBOversCount = 0;
     private TextView tvTeamAScore;
+    private TextView tvTeamBScore;
     private Handler homeActivityHandler;
+
+    private static final int TEAM_A = 0;
+    private static final int TEAM_B = 1;
+    private static final int SINGLE_RUN = 1;
+    private static final int FOUR = 4;
+    private static final int SIX = 6;
 
 
     @Override
@@ -23,73 +32,20 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         tvTeamAScore = (TextView) findViewById(R.id.team_a_score_text_view);
+        tvTeamBScore = (TextView) findViewById(R.id.team_b_score_text_view);
         homeActivityHandler = new Handler();
     }
 
     public void addSixForTeamA(View view) {
-        Thread increaseScoreSequentially = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int i =0;
-                do {
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    ++teamAScore;
-                    homeActivityHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            displayTeamAScore();
-                        }
-                    });
-
-                    ++i;
-                } while (i < 6);
-            }
-        });
-
-        increaseScoreSequentially.start();
-
+        addScoresinBackground(TEAM_A, SIX);
     }
 
     public void addFourForTeamA(View view) {
-        Thread increasScoreByFour = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int i = 0;
-                do {
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    ++teamAScore;
-                    homeActivityHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            displayTeamAScore();
-                        }
-                    });
-                    ++i;
-                } while (i < 4);
-            }
-        });
-
-        increasScoreByFour.start();
+        addScoresinBackground(TEAM_A, FOUR);
     }
 
     public void addOneForTeamA(View view) {
-        teamAScore += 1;
-        try {
-            Thread.sleep(250);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        displayTeamAScore();
+        addScoresinBackground(TEAM_A, SINGLE_RUN);
     }
 
     public void dropWicketForTeamA(View view) {
@@ -107,7 +63,44 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    public void displayTeamAScore() {
-        tvTeamAScore.setText("" + teamAScore);
+    public void displayScore(int teamName) {
+        if (teamName == TEAM_A) {
+            tvTeamAScore.setText("" + teamAScore);
+        } else if (teamName == TEAM_B) {
+            tvTeamBScore.setText("" + teamBScore);
+        }
+    }
+
+    private void addScoresinBackground(final int teamName, final int scoreValue) {
+        Thread increaseScoreSequentially = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int i =0;
+                do {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (teamName == TEAM_A) {
+                        ++teamAScore;
+                    }else if (teamName == TEAM_B){
+                        ++teamBScore;
+                    }
+
+                    homeActivityHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            displayScore(teamName);
+                        }
+                    });
+
+                    ++i;
+                } while (i < scoreValue);
+            }
+        });
+
+        increaseScoreSequentially.start();
     }
 }
