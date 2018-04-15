@@ -63,6 +63,21 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    public void addOverForTeamA(View view) {
+        if (teamAOversCount < 20) {
+            ++teamAOversCount;
+            final TextView tvTeamAOversCount = (TextView) findViewById(R.id.team_a_overs_text_view);
+            homeActivityHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    tvTeamAOversCount.setText("" + teamAOversCount);
+                }
+            }, 250);
+        }else {
+            Toast.makeText(this, "Team A's inning is over", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void addSixForTeamB(View view) {
         addScoresinBackground(TEAM_B, SIX);
     }
@@ -83,6 +98,21 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     tvTeamBWicketsCount.setText("/" + teamBWicketsCount);
+                }
+            }, 250);
+        }else {
+            Toast.makeText(this, "Team B's inning is over", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void addOverForTeamB(View view) {
+        if (teamBOversCount < 20) {
+            ++teamBOversCount;
+            final TextView tvTeamBOversCount = (TextView) findViewById(R.id.team_b_overs_text_view);
+            homeActivityHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    tvTeamBOversCount.setText("" + teamBOversCount);
                 }
             }, 250);
         }else {
