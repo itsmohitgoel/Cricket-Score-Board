@@ -1,13 +1,13 @@
 package com.example.mohgoel.cricketscoreboard;
 
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
 
 public class HomeActivity extends AppCompatActivity {
     private int teamAScore = 0;
@@ -17,7 +17,11 @@ public class HomeActivity extends AppCompatActivity {
     private int teamBWicketsCount = 0;
     private int teamBOversCount = 0;
     private TextView tvTeamAScore;
+    private TextView tvTeamAWicketsCount;
+    private TextView tvTeamAOversCount;
     private TextView tvTeamBScore;
+    private TextView tvTeamBWicketsCount;
+    private TextView tvTeamBOversCount;
     private Handler homeActivityHandler;
 
     private static final int TEAM_A = 0;
@@ -26,6 +30,13 @@ public class HomeActivity extends AppCompatActivity {
     private static final int FOUR = 4;
     private static final int SIX = 6;
 
+    public static final String TEAM_A_SCORE = "TeamAScore";
+    public static final String TEAM_A_WICKETS_COUNT = "TeamAWicketsCount";
+    public static final String TEAM_A_OVERS_COUNT = "TeamAOversCount";
+    public static final String TEAM_B_SCORE = "TeamBScore";
+    public static final String TEAM_B_WICKETS_COUNT = "TeamBWicketsCount";
+    public static final String TEAM_B_OVERS_COUNT = "TeamBOversCount";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +44,10 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         tvTeamAScore = (TextView) findViewById(R.id.team_a_score_text_view);
         tvTeamBScore = (TextView) findViewById(R.id.team_b_score_text_view);
+        tvTeamAWicketsCount = (TextView) findViewById(R.id.team_a_wickets_text_view);
+        tvTeamAOversCount = (TextView) findViewById(R.id.team_a_overs_text_view);
+        tvTeamBWicketsCount = (TextView) findViewById(R.id.team_b_wickets_text_view);
+        tvTeamBOversCount = (TextView) findViewById(R.id.team_b_overs_text_view);
         homeActivityHandler = new Handler();
     }
 
@@ -51,14 +66,13 @@ public class HomeActivity extends AppCompatActivity {
     public void dropWicketForTeamA(View view) {
         if (teamAWicketsCount < 10) {
             ++teamAWicketsCount;
-            final TextView tvTeamAWicketsCount = (TextView) findViewById(R.id.team_a_wickets_text_view);
             homeActivityHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    tvTeamAWicketsCount.setText("/" + teamAWicketsCount);
+                    tvTeamAWicketsCount.setText("" + teamAWicketsCount);
                 }
             }, 250);
-        }else {
+        } else {
             Toast.makeText(this, "Team A's inning is over", Toast.LENGTH_SHORT).show();
         }
     }
@@ -66,14 +80,13 @@ public class HomeActivity extends AppCompatActivity {
     public void addOverForTeamA(View view) {
         if (teamAOversCount < 20) {
             ++teamAOversCount;
-            final TextView tvTeamAOversCount = (TextView) findViewById(R.id.team_a_overs_text_view);
             homeActivityHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     tvTeamAOversCount.setText("" + teamAOversCount);
                 }
-            }, 250);
-        }else {
+            }, 100);
+        } else {
             Toast.makeText(this, "Team A's inning is over", Toast.LENGTH_SHORT).show();
         }
     }
@@ -93,14 +106,13 @@ public class HomeActivity extends AppCompatActivity {
     public void dropWicketForTeamB(View view) {
         if (teamBWicketsCount < 10) {
             ++teamBWicketsCount;
-            final TextView tvTeamBWicketsCount = (TextView) findViewById(R.id.team_b_wickets_text_view);
             homeActivityHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    tvTeamBWicketsCount.setText("/" + teamBWicketsCount);
+                    tvTeamBWicketsCount.setText("" + teamBWicketsCount);
                 }
             }, 250);
-        }else {
+        } else {
             Toast.makeText(this, "Team B's inning is over", Toast.LENGTH_SHORT).show();
         }
     }
@@ -108,14 +120,13 @@ public class HomeActivity extends AppCompatActivity {
     public void addOverForTeamB(View view) {
         if (teamBOversCount < 20) {
             ++teamBOversCount;
-            final TextView tvTeamBOversCount = (TextView) findViewById(R.id.team_b_overs_text_view);
             homeActivityHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     tvTeamBOversCount.setText("" + teamBOversCount);
                 }
             }, 250);
-        }else {
+        } else {
             Toast.makeText(this, "Team B's inning is over", Toast.LENGTH_SHORT).show();
         }
     }
@@ -132,17 +143,17 @@ public class HomeActivity extends AppCompatActivity {
         Thread increaseScoreSequentially = new Thread(new Runnable() {
             @Override
             public void run() {
-                int i =0;
+                int i = 0;
                 do {
                     try {
-                        Thread.sleep(200);
+                        Thread.sleep(50);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
 
                     if (teamName == TEAM_A) {
                         ++teamAScore;
-                    }else if (teamName == TEAM_B){
+                    } else if (teamName == TEAM_B) {
                         ++teamBScore;
                     }
 
@@ -159,5 +170,70 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         increaseScoreSequentially.start();
+    }
+
+    public void resetScores(View view) {
+        teamAOversCount = 0;
+        teamAWicketsCount = 0;
+        teamAScore = 0;
+        teamBOversCount = 0;
+        teamBWicketsCount = 0;
+        teamBScore = 0;
+
+        updateUI();
+    }
+
+    private void updateUI() {
+        tvTeamAScore.setText("" + teamAScore);
+        tvTeamAWicketsCount.setText("" + teamAWicketsCount);
+        tvTeamAOversCount.setText("" + teamAOversCount);
+        tvTeamBScore.setText("" + teamBScore);
+        tvTeamBWicketsCount.setText("" + teamBWicketsCount);
+        tvTeamBOversCount.setText("" + teamBOversCount);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        //Save the state of class members
+        outState.putInt(TEAM_A_SCORE, teamAScore);
+        outState.putInt(TEAM_A_WICKETS_COUNT, teamAWicketsCount);
+        outState.putInt(TEAM_A_OVERS_COUNT, teamAOversCount);
+        outState.putInt(TEAM_B_SCORE, teamBScore);
+        outState.putInt(TEAM_B_WICKETS_COUNT, teamBWicketsCount);
+        outState.putInt(TEAM_B_OVERS_COUNT, teamBOversCount);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        teamAScore = savedInstanceState.getInt(TEAM_A_SCORE);
+        teamAWicketsCount = savedInstanceState.getInt(TEAM_A_WICKETS_COUNT);
+        teamAOversCount = savedInstanceState.getInt(TEAM_A_OVERS_COUNT);
+        teamBScore = savedInstanceState.getInt(TEAM_B_SCORE);
+        teamBWicketsCount = savedInstanceState.getInt(TEAM_B_WICKETS_COUNT);
+        teamBOversCount = savedInstanceState.getInt(TEAM_B_OVERS_COUNT);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
+    public void declareWinner(View view) {
+        int winner = (teamAScore >= teamBScore) ? TEAM_A : TEAM_B;
+        String message = "";
+        if (winner == TEAM_A) {
+            message = "TEAM A is WINNER!";
+        } else {
+            message = "TEAM B is WINNER";
+        }
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+
+        resetScores(view);
     }
 }
